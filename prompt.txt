@@ -1,0 +1,58 @@
+VAI TRÒ
+Bạn là một senior front-end developer. Hãy triển khai tính năng chuyển đổi
+giao diện Sáng/Tối cho website, trong đó hình nền là video động.
+
+TÀI NGUYÊN
+- Gradient_Lab_001.mp4 → hình nền động cho chế độ SÁNG (ban ngày)
+- Gradient_Lab_002.mp4 → hình nền động cho chế độ TỐI (ban đêm)
+(Đặt trong thư mục /assets/videos/. Giữ nguyên tên file hoặc cập nhật đường
+dẫn tương ứng trong code.)
+
+YÊU CẦU CHÍNH
+1. Chế độ sáng dùng video 001, chế độ tối dùng video 002. Không đảo ngược.
+2. Nút chuyển Sáng/Tối (icon mặt trời/mặt trăng) đặt cố định ở header,
+   hỗ trợ bàn phím (Tab, Enter, Space) và có aria-label rõ ràng.
+3. Khi chuyển chế độ, hai video chuyển mượt bằng crossfade (opacity,
+   khoảng 600–800ms), không bị nháy hay giật khung hình.
+4. Chế độ mặc định theo prefers-color-scheme của hệ điều hành. Lựa chọn
+   thủ công của người dùng được lưu vào localStorage và ưu tiên cao hơn.
+5. Toàn bộ giao diện (màu chữ, card, nút, border) đổi theo bằng CSS
+   variables (data-theme="light" | "dark" trên <html>).
+
+CẤU TRÚC KỸ THUẬT
+- Hai thẻ <video> nằm trong một container position: fixed; inset: 0;
+  z-index: -1; object-fit: cover; width/height 100%.
+- Thuộc tính: autoplay, muted, loop, playsinline, preload="metadata"
+  (video đang hiển thị dùng preload="auto").
+- Chỉ video của chế độ đang bật được phát. Video còn lại gọi pause() sau khi
+  crossfade xong để tiết kiệm CPU/pin. Khi chuyển lại, gọi play() và xử lý
+  promise bị từ chối (autoplay policy).
+- Thêm lớp phủ (overlay) gradient bán trong suốt phía trên video để đảm bảo
+  độ tương phản chữ đạt WCAG AA (tỉ lệ tối thiểu 4.5:1) ở cả hai chế độ.
+- Thêm thuộc tính poster (khung hình đầu của mỗi video) để hiển thị ngay
+  trong lúc video đang tải.
+
+HIỆU NĂNG & TRẢI NGHIỆM
+- Tránh nháy sáng khi tải trang: chạy một script nhỏ inline trong <head> để
+  đặt data-theme trước khi render.
+- Tôn trọng prefers-reduced-motion: nếu bật, thay video bằng ảnh poster tĩnh.
+- Trên mobile hoặc khi bật Data Saver (navigator.connection.saveData), dùng
+  ảnh poster thay vì video, hoặc chỉ tải video khi kết nối nhanh.
+- Nếu video lỗi hoặc không tải được, fallback về màu gradient CSS tương ứng
+  với từng chế độ.
+- Đề xuất nén video (H.264 .mp4, kèm bản WebM nếu cần), mục tiêu mỗi file
+  dưới khoảng 3–5 MB cho nền động.
+
+ĐẦU RA MONG MUỐN
+- Code hoàn chỉnh (HTML + CSS + JS thuần, hoặc React nếu dự án đang dùng).
+- Chú thích ngắn ở các đoạn quan trọng: logic chuyển theme, crossfade,
+  xử lý play/pause.
+- Hướng dẫn tích hợp: đặt file ở đâu, cần sửa gì ở file hiện có.
+
+TIÊU CHÍ NGHIỆM THU
+- [ ] Sáng → hiển thị đúng video 001; Tối → hiển thị đúng video 002.
+- [ ] Chuyển đổi mượt, không flash trắng/đen, không giật.
+- [ ] Tải lại trang vẫn giữ đúng lựa chọn của người dùng.
+- [ ] Chữ dễ đọc trên cả hai video, ở cả desktop và mobile.
+- [ ] Hoạt động trên Chrome, Safari (iOS), Firefox, Edge.
+- [ ] Không có lỗi trong console; video ẩn không tiêu tốn CPU.
